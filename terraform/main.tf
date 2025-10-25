@@ -57,6 +57,7 @@ module "ec2" {
   secret_info    = module.database.secret_info
   s3_bucket_name = module.storage.s3_info.bucket_name
   custom_key_arn = module.key.custom_key_id
+  admin_ips      = var.admin_ips
   vpc_config = {
     vpc_id                    = module.network.vpc_info.vpc_id
     public_subnet_ids         = module.network.vpc_info.public_subnet_ids

@@ -3,7 +3,15 @@ locals {
     mgmtsg = {
       name          = "${var.resource_prefix}-mgmt-sg"
       description   = "Security Group for management traffic"
-      ingress_rules = []
+      ingress_rules = [
+        {
+          from_port   = 22
+          to_port     = 22
+          protocol    = "tcp"
+          cidr_blocks = var.admin_ips
+          rule_desc   = "Allow SSH access from admin IPs"
+        }
+      ]
       egress_rules = [
         {
           from_port   = 0

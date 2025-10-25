@@ -1,8 +1,9 @@
 ec2_config = {
   InstanceType  = "t3.medium"
   PublicKeyData = null
-  PublicKeyPath = "~/.ssh/id_rsa.pub"
+  PublicKeyPath = "~/.ssh/id_ed25519.pub"
 }
+
 network_config = {
   vpc_cidr              = "172.17.0.0/16"
   dcm_cli_cidrs         = ["0.0.0.0/0"]
@@ -15,14 +16,19 @@ network_config = {
   vpn_cert_cn_suffix    = "vpn.digihunch.com"
   vpn_cert_valid_days   = 3650
 }
+
 provider_tags = {
   environment = "dev"
-  owner       = "admin@digihunch.com"
+  owner       = "bkeating@cortechs.ai"
+  service     = "orthweb-dicom-server"
 }
+
 deployment_options = {
   ConfigRepo     = "https://github.com/digihunchinc/orthanc-config.git"
-  CWLogRetention = 3
-  EnableCWLog    = false
+  CWLogRetention = 30
+  EnableCWLog    = true
   SiteName       = null
   InitCommand    = "pwd && echo Custom Command && make aws"
 }
+
+admin_ips = ["75.82.64.111/32"]

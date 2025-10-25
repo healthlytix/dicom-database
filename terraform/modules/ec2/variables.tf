@@ -48,3 +48,7 @@ variable "resource_prefix" {
   type        = string
   description = "Uniq prefix of each resource"
 }
+variable "admin_ips" {
+  type        = list(string)
+  description = "List of IP addresses or CIDR blocks allowed to SSH to the EC2 instances"
+}

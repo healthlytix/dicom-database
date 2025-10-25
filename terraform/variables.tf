@@ -119,3 +119,15 @@ variable "deployment_options" {
     error_message = "The value of deployment_options.CWLogRetention must be one of the following integers: -1,0,1,3,5,7,14,30,60,90,120,150,180,365,400,545,731,1096."
   }
 }
+
+variable "admin_ips" {
+  description = "List of IP addresses or CIDR blocks allowed to SSH to the EC2 instances"
+  type        = list(string)
+  default     = ["75.82.64.111/32"]
+  validation {
+    condition = alltrue([
+      for ip in var.admin_ips : can(cidrhost(ip, 0))
+    ])
+    error_message = "All admin_ips must be valid IPv4 CIDR blocks."
+  }
+}
