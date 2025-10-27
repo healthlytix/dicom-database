@@ -1,18 +1,8 @@
-# Orthweb - Orthanc Solution on AWS
-<a href="https://www.orthanc-server.com/"><img style="float" align="right" src="docs/assets/images/orthanc_logo.png" width="200"></a>
+# Cortech DICOM Database
 
+This repo contains scripts and documentation for creating and administering Cortechs' internal DICOM database. 
 
-[![Linux](https://img.shields.io/badge/Linux-FCC624?logo=linux&logoColor=black)](https://aws.amazon.com/amazon-linux-2)
-[![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?logo=docker&logoColor=white)](https://www.docker.com/)
-[![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
-[![Nginx](https://img.shields.io/badge/nginx-%23009639.svg?&logo=nginx&logoColor=white)](https://nginx.org/en/index.html)
-[![Keycloak](https://img.shields.io/badge/Keycloak-4D4D4D?logo=keycloak&logoColor=white&style=flat)](https://www.keycloak.org/)
-[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-
-[![Terraform](https://img.shields.io/badge/terraform-%235835CC.svg?logo=terraform&logoColor=white)](https://www.terraform.io/)
-[![Amazon EC2](https://img.shields.io/badge/Amazon%20EC2-F90?logo=amazonec2&logoColor=white&style=flat)](https://aws.amazon.com/ec2/)
-[![Amazon S3](https://img.shields.io/badge/Amazon%20S3-569A31?logo=amazons3&logoColor=white&style=flat)](https://aws.amazon.com/s3/)
-[![Amazon RDS](https://img.shields.io/badge/Amazon%20RDS-527FFF?logo=amazonrds&logoColor=white&style=flat)](https://aws.amazon.com/rds/postgresql/)
+The current implementation is a modified version of [the Orthweb project](https://github.com/digihunch/orthweb); the original README is below. Although this is a full-featured DICOM database (it can serve as a PACS backend), it is meant primarily for internal Cortechs use and will be deployed to our development ("engineering") AWS account.
 
 ## Overview
 
@@ -31,7 +21,20 @@ The **Orthweb** project also streamlines the configuration of Orthanc solution, 
 
 The project orchestrates the application containers with Docker daemon on EC2 instances. Technical users can expect to build a cloud-based mini-PACS in one hour with rich feature, scalability and security. For those considering hosting Orthanc on Kubernetes, check out the sister project [Korthweb](https://github.com/digihunch/korthweb).
 
-## Partners
-<a href="https://www.yorku.ca/health"><img align="left" src="docs/assets/images/yorku-logo.jpg" style="width: 20%;"></a> <br><br>
+## Technologies
 
-**[York MRI Facility](https://mri.info.yorku.ca/)**
+[![Linux](https://img.shields.io/badge/Linux-FCC624?logo=linux&logoColor=black)](https://aws.amazon.com/amazon-linux-2)
+[![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?logo=docker&logoColor=white)](https://www.docker.com/)
+[![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![Nginx](https://img.shields.io/badge/nginx-%23009639.svg?&logo=nginx&logoColor=white)](https://nginx.org/en/index.html)
+[![Keycloak](https://img.shields.io/badge/Keycloak-4D4D4D?logo=keycloak&logoColor=white&style=flat)](https://www.keycloak.org/)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+
+[![Terraform](https://img.shields.io/badge/terraform-%235835CC.svg?logo=terraform&logoColor=white)](https://www.terraform.io/)
+[![Amazon EC2](https://img.shields.io/badge/Amazon%20EC2-F90?logo=amazonec2&logoColor=white&style=flat)](https://aws.amazon.com/ec2/)
+[![Amazon S3](https://img.shields.io/badge/Amazon%20S3-569A31?logo=amazons3&logoColor=white&style=flat)](https://aws.amazon.com/s3/)
+[![Amazon RDS](https://img.shields.io/badge/Amazon%20RDS-527FFF?logo=amazonrds&logoColor=white&style=flat)](https://aws.amazon.com/rds/postgresql/)
+
+## Documentation
+
+To build the documentation locally, `pip install mkdocs-material mkdocs-include-markdown-plugin` and `mkdocs build`. The docs will then be available in `site`.
