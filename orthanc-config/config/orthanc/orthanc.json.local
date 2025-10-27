@@ -1,0 +1,131 @@
+{
+    "Name" : "${ORG_NAME}",
+    "RemoteAccessAllowed" : true,
+    "SslEnabled" : false,
+    "StableAge" : 60,
+    "DicomAet": "ORTHANC_DCM",
+    "DicomPort": 4242,
+    "DicomAssociationCloseDelay" : 5,
+    "DicomAlwaysAllowEcho": true,
+    "DicomAlwaysAllowStore": true,
+    "DicomAlwaysAllowFind": true,
+    "DicomAlwaysAllowGet": false,
+    "DicomCheckCalledAet": false,
+    "StorageCompression" : true,
+    "LimitFindResults": 100,
+    "LimitFindInstances": 200,
+    "StorageAccessOnFind": "Never",
+    "SaveJobs": true, 
+    "TcpNoDelay": true, 
+    "KeepAlive": true,
+    "IngestTranscodingOfUncompressed" : true,
+    "IngestTranscodingOfCompressed" : false,
+    "IngestTranscoding" : "1.2.840.10008.1.2.4.80",
+    //"LuaScripts" : [
+    //  "scripts/server_side_processing.lua"
+    //],
+    "OrthancExplorer2": {
+        "IsDefaultUI": true,
+        "UiOptions": {
+            "AvailableLanguages": ["en","fr"],
+            "EnableShares": true,
+            "DefaultShareDuration": 15,
+            "ShareDurations": [0, 7, 15, 30, 90]
+        },
+        "Tokens" : {
+            "InstantLinksValidity": 3600,
+            "ShareType": "stone-viewer-publication"
+        },
+        "Keycloak" : {
+            "Enable": true,
+            "Url": "${KC_URL}",
+            "Realm": "${KC_REALM}",
+            "ClientId": "${KC_CLIENT_ID}"
+        }
+    },
+    "StorageDirectory": "/var/lib/orthanc/data",
+    "PostgreSQL" : {
+    	"EnableIndex" : true,
+    	"EnableStorage" : false,
+    	"Host" : "${DB_HOST}",
+    	"Port" : 5432,
+    	"Database" : "${DB_NAME}",
+    	"Username" : "${DB_USERNAME}",
+    	"Password" : "${DB_PASSWORD}",
+        "IndexConnectionsCount" : 10,
+        "TransactionMode" : "ReadCommitted",
+    	"EnableSsl" : false,
+    	"Lock" : false
+    },
+    "AuthenticationEnabled": false,
+    "Authorization": {
+        "WebServiceRootUrl": "${AUTH_SVC_URL}",
+        "WebServiceUsername": "${AUTH_SVC_UN}",
+        "WebServicePassword": "${AUTH_SVC_PSW}",
+        "StandardConfigurations" : [
+            "stone-webviewer",
+            "orthanc-explorer-2"
+        ],
+        "TokenHttpHeaders" : [ "api-key" ],
+        "CheckedLevel": "studies",
+        "Permissions" : [
+            ["post", "^/auth/tokens/decode$", ""],
+            ["put", "^/auth/tokens/viewer-instant-link$", "all|view"],
+            ["put", "^/auth/tokens/download-instant-link$", "all|download"],
+            ["put", "^/auth/tokens/stone-viewer-publication$", "all|share"],
+
+            ["post", "^/tools/find$", "all|view"],
+            ["get", "^/tools/labels$", "all|view"],
+            ["get", "^/tools(.*)$", "all"],
+            ["post", "^/tools(.*)$", "all"],
+
+            ["get" , "^/(patients|studies|series|instances)/([a-f0-9-]+)$", "all|view"],
+            ["get" , "^/(patients|studies|series|instances)/([a-f0-9-]+)/(studies|study|series|instances)$", "all|view"],
+            ["get" , "^/instances/([a-f0-9-]+)/(tags|header)$", "all|view"],
+            
+            ["get" , "^/(patients|studies|series|instances)/([a-f0-9-]+)/labels(.*)$", "all|view"],
+            ["put" , "^/(patients|studies|series|instances)/([a-f0-9-]+)/labels(.*)$", "all"],
+            ["delete" , "^/(patients|studies|series|instances)/([a-f0-9-]+)/labels(.*)$", "all"],
+
+            ["post", "^/(patients|studies|series|instances)/([a-f0-9-]+)/modify(.*)$", "all|modify"],
+            ["post", "^/(patients|studies|series|instances)/([a-f0-9-]+)/anonymize(.*)$", "all|anonymize"],
+            ["delete" , "^/(patients|studies|series|instances)/([a-f0-9-]+)$", "all|delete"],
+            
+            ["post", "^/instances$", "all|upload"],
+
+            ["get" , "^/jobs/([a-f0-9-]+)$", "all|send|modify|anonymize|q-r-remote-modalities"],
+
+            ["post", "^/(peers|modalities)/(.*)/store$", "all|send"],
+            ["get" , "^/(peers|modalities)$", "all|send|q-r-remote-modalities"],
+            ["post", "^/modalities/(.*)/echo$", "all|send|q-r-remote-modalities"],
+            ["post", "^/modalities/(.*)/query$", "all|q-r-remote-modalities"],
+            ["get", "^/queries/([a-f0-9-]+)/answers$", "all|q-r-remote-modalities"],
+            ["post", "^/modalities/(.*)/move$", "all|q-r-remote-modalities"],
+            ["get" , "^/DICOM_WEB_ROOT/servers$", "all|send|q-r-remote-modalities"],
+            ["get" , "^/DICOM_WEB_ROOT/(servers)/(.*)/stow$", "all|send"],
+
+            ["get" , "^/changes$", "all"],
+            ["get" , "^/exports$", "all"],
+            ["get" , "^/statistics$", "all"],
+            ["get" , "^/system$", "all"]
+        ]
+    },
+    "DicomWeb" : {
+        "Enable" : true,
+        "EnableWado" : true,
+        "Ssl" : false
+    },
+    "StoneWebViewer" : {
+        "PrintEnabled" : false,
+        "DownloadAsJpegEnabled" : false,
+        "ShowInfoPanelAtStartup": "Never",
+        "ShowNotForDiagnosticUsageDisclaimer": false
+    },
+    "Plugins": [
+      "/usr/share/orthanc/plugins-available/libOrthancPostgreSQLIndex.so",
+      "/usr/share/orthanc/plugins-available/libOrthancExplorer2.so",
+      "/usr/share/orthanc/plugins-available/libOrthancAuthorization.so",
+      "/usr/share/orthanc/plugins-available/libOrthancDicomWeb.so",
+      "/usr/share/orthanc/plugins-available/libStoneWebViewer.so" 
+    ]
+}

@@ -1,0 +1,107 @@
+services:
+  nginx-proxy:
+    image: $NGINX_DOCKER_IMAGE
+    container_name: nginx-proxy
+    depends_on: 
+      - orthanc-service
+      - orthanc-auth-service
+      - keycloak-service
+    restart: unless-stopped
+    ports: 
+      - 443:443
+      - 11112:11112
+    volumes:
+      - ./$SITE_KEY_CERT_FILE:/usr/local/nginx/conf/site.pem:ro
+      - ./config/nginx/:/etc/nginx/:ro
+
+  orthanc-service:
+    image: $ORTHANC_DOCKER_IMAGE
+    container_name: orthanc-backend
+    command: /etc/orthanc/
+    volumes:
+      - ./data/storage-orthanc:/var/lib/orthanc/data
+      - ./config/orthanc/:/etc/orthanc/
+    depends_on: 
+      - orthanc-db
+    restart: unless-stopped
+    environment:
+      VERBOSE_ENABLED: $VERBOSE_ENABLED
+      ORG_NAME: $ORG_NAME
+      DB_HOST: $ORTHANC_DB_HOST
+      DB_NAME: $ORTHANC_DB_NAME
+      DB_USERNAME: $ORTHANC_DB_USERNAME
+      DB_PASSWORD: $ORTHANC_DB_PASSWORD
+      KC_URL: "https://${SITE_NAME}/keycloak/"
+      KC_REALM: $ORTHANC_KC_REALM
+      KC_CLIENT_ID: $ORTHANC_KC_CLIENT_ID
+      AUTH_SVC_URL: "http://orthanc-auth-service:8000/"
+      AUTH_SVC_UN: $AUTH_SVC_UN
+      AUTH_SVC_PSW: $AUTH_SVC_PSW
+    healthcheck:
+      disable: true 
+
+  orthanc-auth-service: 
+    image: $AUTH_SERVICE_DOCKER_IMAGE
+    container_name: authorization-service
+    #build:
+    #  context: ./app/
+    #  dockerfile: Dockerfile
+    depends_on:
+      - keycloak-service
+    restart: unless-stopped
+    volumes:
+      - ./config/orthanc_auth_service/permissions.json:/orthanc_auth_service/permissions.json
+    environment:
+      SECRET_KEY: "my-secret-key"
+      ENABLE_KEYCLOAK: "true"
+      KEYCLOAK_URI: "http://keycloak-service:8080/realms/orthanc/"
+      KEYCLOAK_ADMIN_URI: "http://keycloak-service:8080/admin/realms/orthanc/"
+      #KEYCLOAK_CLIENT_SECRET: "uncomment-and-fill-me-in-after-bootstrapping"
+      #ENABLE_KEYCLOAK_API_KEYS: "true"    # uncomment after bootstrapping
+      # Adjust the following two variables according to https setup
+      PUBLIC_ORTHANC_ROOT: "https://${SITE_NAME}/orthanc/"
+      PUBLIC_LANDING_ROOT: "https://${SITE_NAME}/orthanc/ui/app/token-landing.html"
+      USERS: |
+        {
+          "${AUTH_SVC_UN}": "${AUTH_SVC_PSW}"
+        }
+
+  keycloak-service:
+    image: $KEYCLOAK_DOCKER_IMAGE
+    container_name: keycloak-backend
+    depends_on: 
+      - keycloak-db
+    restart: unless-stopped
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: $KC_ADMIN_USR      # replacing legacy $KEYCLOAK_ADMIN environment variable
+      KC_BOOTSTRAP_ADMIN_PASSWORD: $KC_ADMIN_PSW      # replacing legacy $KC_ADMIN_PSW environment variable
+      KC_DB_URL: "jdbc:postgresql://${KC_DB_HOST}:5432/${KC_DB_NAME}"
+      KC_DB_USERNAME: $KC_DB_USERNAME
+      KC_DB_PASSWORD: $KC_DB_PASSWORD
+      # the following line is required if HTTPS is enabled in nginx
+      KC_HOSTNAME: "https://${SITE_NAME}/keycloak"    # replacing legacy environment variable $KC_HOSTNAME_URL and deprecate legacy environment variable $KC_HOSTNAME_ADMIN_URL
+
+
+  orthanc-db:
+    image: $POSTGRESQL_DOCKER_IMAGE
+    restart: unless-stopped
+    container_name: orthanc-db
+    shm_size: 128mb
+    volumes: 
+      - ./data/pgdata-orthanc:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: $ORTHANC_DB_NAME
+      POSTGRES_USER: $ORTHANC_DB_USERNAME
+      POSTGRES_PASSWORD: $ORTHANC_DB_PASSWORD
+
+  keycloak-db:
+    image: $POSTGRESQL_DOCKER_IMAGE
+    restart: unless-stopped
+    container_name: keycloak-db
+    shm_size: 128mb
+    volumes: 
+      - ./data/pgdata-keycloak:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: $KC_DB_NAME
+      POSTGRES_USER: $KC_DB_USERNAME
+      POSTGRES_PASSWORD: $KC_DB_PASSWORD
