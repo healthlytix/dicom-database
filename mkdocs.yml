@@ -29,6 +29,7 @@ theme:
       toggle:
         icon: material/brightness-4
         name: Switch to light mode
+
 nav:
   - Home: 'index.md'
   - Introduction: 'introduction/index.md'
@@ -45,8 +46,12 @@ nav:
     - 'Basic Validation': 'validation/basic.md'
     - 'Advanced Validation': 'validation/advanced.md'
     - 'Additional Validation': 'validation/additional.md'
+  - Brian's Notes: 
+    - 'Troubleshooting': 'brians-notes/troubleshooting.md'
+    - 'User Management': 'brians-notes/user-management.md'
 
   - Support: 'support/index.md'
+
 plugins:
   - search
   - include-markdown

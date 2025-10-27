@@ -37,4 +37,6 @@ The project orchestrates the application containers with Docker daemon on EC2 in
 
 ## Documentation
 
-To build the documentation locally, `pip install mkdocs-material mkdocs-include-markdown-plugin` and `mkdocs build`. The docs will then be available in `site`.
+To build the documentation locally, `pip install mkdocs-material mkdocs-include-markdown-plugin` and, from the repo root folder, `mkdocs build`. The docs will then be available in `site`. You can browse the files directly, but it's a better experience (and more closely matches the deployed pages) to run `mkdocs serve` and click on the link (probably something like http://127.0.0.1:8000/).
+
+To write new documentation, create markdown files in `docs` and add them to the menu by editing `mkdocs.yaml`.
