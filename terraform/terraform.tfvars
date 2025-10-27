@@ -8,7 +8,7 @@ network_config = {
   vpc_cidr              = "172.17.0.0/16"
   dcm_cli_cidrs         = ["0.0.0.0/0"]
   web_cli_cidrs         = ["0.0.0.0/0"]
-  az_count              = 2
+  az_count              = 1
   public_subnet_pfxlen  = 24
   private_subnet_pfxlen = 22
   interface_endpoints   = []
@@ -30,4 +30,6 @@ deployment_options = {
   InitCommand    = "pwd && echo Custom Command && make aws"
 }
 
-admin_ips = ["75.82.64.111/32"]
+admin_ips = [
+  "75.82.64.111/32"  # brian's home office
+]
