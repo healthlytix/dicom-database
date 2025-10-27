@@ -24,7 +24,6 @@ provider_tags = {
 }
 
 deployment_options = {
-  ConfigRepo     = "https://github.com/digihunchinc/orthanc-config.git"
   CWLogRetention = 30
   EnableCWLog    = true
   SiteName       = null

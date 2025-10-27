@@ -56,6 +56,7 @@ locals {
 
 data "aws_region" "this" {}
 
+
 data "aws_caller_identity" "current" {}
 
 data "aws_ami" "amazon_linux_ami" {
@@ -91,8 +92,8 @@ data "cloudinit_config" "orthconfig" {
       cw_docker_log   = var.deployment_options.EnableCWLog,
       sec_name        = var.secret_info.db_secret_name,
       s3_bucket       = var.s3_bucket_name,
+      orthanc_config_bucket = var.orthanc_config_bucket,
       site_name       = var.deployment_options.SiteName != null ? var.deployment_options.SiteName : ""
-      config_repo     = var.deployment_options.ConfigRepo
       init_command    = var.deployment_options.InitCommand
     })
   }
@@ -178,6 +179,25 @@ resource "aws_iam_role_policy" "s3_access_policy" {
         Resource = [
           "arn:aws:s3:::${var.s3_bucket_name}",
           "arn:aws:s3:::${var.s3_bucket_name}/*"
+        ]
+      }
+    ]
+  })
+}
+
+# EC2 instance needs to access orthanc-config bucket
+resource "aws_iam_role_policy" "orthanc_config_s3_access_policy" {
+  name = "${var.resource_prefix}-orthanc_config_s3_access_policy"
+  role = aws_iam_role.ec2_iam_role.name
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = ["s3:GetObject", "s3:ListBucket"]
+        Effect = "Allow"
+        Resource = [
+          "arn:aws:s3:::${var.orthanc_config_bucket}",
+          "arn:aws:s3:::${var.orthanc_config_bucket}/*"
         ]
       }
     ]

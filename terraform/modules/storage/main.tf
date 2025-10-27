@@ -83,6 +83,42 @@ resource "aws_s3_bucket_policy" "orthbucketpolicy" {
   depends_on = [aws_s3_bucket_public_access_block.orthbucketblockpublicaccess]
 }
 
+resource "aws_s3_bucket" "orthanc_config" {
+  bucket        = "${var.resource_prefix}-orthanc-config"
+  force_destroy = true
+  tags          = { Name = "${var.resource_prefix}-orthanc-config" }
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "orthanc_config_sse" {
+  bucket = aws_s3_bucket.orthanc_config.bucket
+  rule {
+    apply_server_side_encryption_by_default {
+      kms_master_key_id = var.custom_key_arn
+      sse_algorithm     = "aws:kms"
+    }
+  }
+}
+
+resource "aws_s3_bucket_public_access_block" "orthanc_config_blockpublicaccess" {
+  bucket                  = aws_s3_bucket.orthanc_config.id
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+  depends_on              = [aws_s3_bucket.orthanc_config]
+}
+
+# Upload orthanc-config files to S3
+resource "aws_s3_object" "orthanc_config_files" {
+  for_each = fileset("${path.module}/../../orthanc-config", "**")
+  bucket   = aws_s3_bucket.orthanc_config.bucket
+  key      = each.value
+  source   = "${path.module}/../../orthanc-config/${each.value}"
+  etag     = filemd5("${path.module}/../../orthanc-config/${each.value}")
+  
+  depends_on = [aws_s3_bucket.orthanc_config]
+}
+
 resource "aws_s3_bucket" "logging_bucket" {
   bucket        = "${var.resource_prefix}-orthweb-logging"
   force_destroy = true

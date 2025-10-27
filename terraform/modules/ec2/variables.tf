@@ -15,6 +15,10 @@ variable "vpc_config" {
 variable "s3_bucket_name" {
   type = string
 }
+variable "orthanc_config_bucket" {
+  type = string
+  description = "S3 bucket name for orthanc-config files"
+}
 variable "role_name" {
   type = string
 }
@@ -51,4 +55,8 @@ variable "resource_prefix" {
 variable "admin_ips" {
   type        = list(string)
   description = "List of IP addresses or CIDR blocks allowed to SSH to the EC2 instances"
+}
+variable "orthanc_config_files_uploaded" {
+  type        = any
+  description = "S3 objects for orthanc-config files - used to ensure files are uploaded before EC2 creation"
 }

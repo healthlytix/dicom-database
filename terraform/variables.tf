@@ -99,16 +99,14 @@ variable "provider_tags" {
 }
 
 variable "deployment_options" {
-  description = "Deployment Options for app configuration:\n `ConfigRepo` Git Repository for app configuration.\n `SiteName` The Site URL\n `InitCommand` The command to execute from the config directory\n `EnableCWLog` Enable sending Docker daemon log to Cloud Watch.\n `CWLogRetention` Retention for Log Group"
+  description = "Deployment Options for app configuration:\n `SiteName` The Site URL\n `InitCommand` The command to execute from the config directory\n `EnableCWLog` Enable sending Docker daemon log to Cloud Watch.\n `CWLogRetention` Retention for Log Group"
   type = object({
-    ConfigRepo     = string
     SiteName       = string
     InitCommand    = string
     EnableCWLog    = bool
     CWLogRetention = number
   })
   default = {
-    ConfigRepo     = "https://github.com/digihunchinc/orthanc-config.git" # configuration repo to clone.
     SiteName       = null
     InitCommand    = "pwd && echo Custom Init Command (e.g. make aws)" # Command to run from config directory.
     EnableCWLog    = true

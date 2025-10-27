@@ -2,7 +2,29 @@
 echo "Entering userdata2 script"
 
 runuser -l ec2-user -c "
-  git clone --depth 1 ${config_repo}
+  # Download orthanc-config from S3
+  echo 'Downloading orthanc-config from S3...'
+  
+  # Create the orthanc-config directory
+  mkdir -p ~/orthanc-config
+  
+  # Download all files from S3 recursively
+  aws s3 sync s3://${orthanc_config_bucket}/ ~/orthanc-config/
+  if [ \$? -ne 0 ]; then
+    echo 'ERROR: Failed to download orthanc-config from S3'
+    echo 'Please ensure the orthanc-config files exist in s3://${orthanc_config_bucket}/'
+    exit 1
+  fi
+  
+  # Verify the directory has content
+  if [ ! \"\$(ls -A ~/orthanc-config)\" ]; then
+    echo 'ERROR: orthanc-config directory is empty after download'
+    exit 1
+  fi
+  
+  # Change to the orthanc-config directory for further processing
+  cd ~/orthanc-config
+  echo 'Successfully downloaded orthanc-config from S3'
 "
 
 runuser -l ec2-user -c '

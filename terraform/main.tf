@@ -56,6 +56,7 @@ module "ec2" {
   db_info        = module.database.db_info
   secret_info    = module.database.secret_info
   s3_bucket_name = module.storage.s3_info.bucket_name
+  orthanc_config_bucket = module.storage.s3_info.orthanc_config_bucket
   custom_key_arn = module.key.custom_key_id
   admin_ips      = var.admin_ips
   vpc_config = {
@@ -71,6 +72,9 @@ module "ec2" {
   deployment_options = var.deployment_options
   resource_prefix    = random_pet.prefix.id
   depends_on         = [module.database, module.storage, module.network]
+  
+  # Ensure S3 objects are uploaded before EC2 instance creation
+  orthanc_config_files_uploaded = module.storage.orthanc_config_files_uploaded
 }
 
 module "client_vpn" {
