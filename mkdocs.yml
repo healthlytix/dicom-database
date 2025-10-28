@@ -47,8 +47,9 @@ nav:
     - 'Advanced Validation': 'validation/advanced.md'
     - 'Additional Validation': 'validation/additional.md'
   - Brian's Notes: 
-    - 'Troubleshooting': 'brians-notes/troubleshooting.md'
+    - 'Deploy': 'brians-notes/deploy.md'
     - 'User Management': 'brians-notes/user-management.md'
+    - 'Troubleshooting': 'brians-notes/troubleshooting.md'
     - 'TODO': 'brians-notes/todo.md'
 
   - Support: 'support/index.md'

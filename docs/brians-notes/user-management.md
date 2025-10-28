@@ -1,10 +1,14 @@
-# Initial log in
+# User Management
 
-## Initial setup 
+This document describes how admins can manage users of the DICOM database via the keycload console.
 
-initial credentials are on the instance at `orthanc-config/.env`. They're probably "admin"/"changeme" or similar. These creds are used for keycloak - user/password administration - and don't work to log your into the main orthanc site. This is because they are in the "master" realm, as opposed to the "orthanc" realm (apparently this means something in keycloak world)
+The following instructions assume you've already completed all of the steps in `deploy`, including setting a strong admin password for keycloak. The server hostname and the link to the keycloak console are both available as terraform output; view them with `cd terraform`, `terraform output`. 
 
-* To log into keycloak and manage user, you need to go to `https://ec2-54-193-51-35.us-west-1.compute.amazonaws.com/keycloak`, NOT `https://ec2-54-193-51-35.us-west-1.compute.amazonaws.com`.
-* In the drop down at top-left, select the "Othanc" realm (should exist).
-* Click on "Clients" and select existing "orthanc" client. Under "Root URL", paste `https://ec2-54-193-51-35.us-west-1.compute.amazonaws.com/orthanc/`. Under "Valid redirect URIs" paste `https://ec2-54-193-51-35.us-west-1.compute.amazonaws.com/*`. "Web origins" I kept as `*`.
+## Create regular user
 
+* Log into the keycloak console with your `admin` password.
+* From the dropdown at the top-left, change the realm from "master" to "orthanc"
+* Select "Users" from the menu and add a new user
+* Add "Update password" as a required user action so that they'll need to update/save their password (so you don't have access to it)
+* Create the user, then select their "Credentials" tab and create a temporary password for them. Since you do not control when the new user will update it, use a strong password, even if it's temporary! 
+* Share the temp password and the link with the new user
