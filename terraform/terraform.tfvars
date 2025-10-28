@@ -31,5 +31,6 @@ deployment_options = {
 }
 
 admin_ips = [
-  "75.82.64.111/32"  # brian's home office
+  "75.82.64.111/32",  # brian's home office
+  "98.154.25.74/32"   # cortechs' SD office
 ]
