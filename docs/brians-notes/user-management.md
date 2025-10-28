@@ -12,3 +12,5 @@ The following instructions assume you've already completed all of the steps in `
 * Add "Update password" as a required user action so that they'll need to update/save their password (so you don't have access to it)
 * Create the user, then select their "Credentials" tab and create a temporary password for them. Since you do not control when the new user will update it, use a strong password, even if it's temporary! 
 * Share the temp password and the link with the new user
+
+FIXME: this isn't quite enough. You need to assign roles to the user in order for them to do almost anything. Search this chat: https://chatgpt.com/c/6901247f-96f0-8325-b50d-a0f54a0cc220 for "doesn’t yet define any client roles"

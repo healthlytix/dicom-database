@@ -1,9 +1,11 @@
 
+* save terraform state to S3. or wherever syed wants it
 * static IP and/or subdomain
 * a proper tls cert
 * move to us-west-2. this will require putting it in an existing vpn and probably tweaking the cidr ranges
 * fix terraform warnings
 * KC_DB_USERNAME is set to `myuser`. This should be `dbadmin` or similar
+* update AETitle in `orthanc-config/config/orthanc/orthanc.json.local`
 
 user stuff:
 * delete default users - `doctor`, `external`
