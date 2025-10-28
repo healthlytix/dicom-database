@@ -135,7 +135,7 @@ resource "aws_db_instance" "postgres" {
   db_subnet_group_name                = aws_db_subnet_group.dbsubnetgroup.name
   parameter_group_name                = aws_db_parameter_group.dbparamgroup.name
   storage_encrypted                   = true
-  multi_az                            = true
+  multi_az                            = var.multi_az
   auto_minor_version_upgrade          = true
   enabled_cloudwatch_logs_exports     = local.db_log_exports
   kms_key_id                          = var.custom_key_arn

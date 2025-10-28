@@ -38,3 +38,8 @@ variable "is_prod" {
   description = "whether the resource is in prod environment"
   default     = false
 }
+variable "multi_az" {
+  type        = bool
+  description = "Whether to enable Multi-AZ deployment for RDS"
+  default     = true
+}
