@@ -84,9 +84,11 @@ resource "aws_s3_bucket_policy" "orthbucketpolicy" {
 }
 
 resource "aws_s3_bucket" "orthanc_config" {
-  bucket        = "${var.resource_prefix}-orthanc-config"
+  bucket        = "orthanc-config"
   force_destroy = true
-  tags          = { Name = "${var.resource_prefix}-orthanc-config" }
+  tags          = {
+    Name = "orthanc-config"
+  }
 }
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "orthanc_config_sse" {
@@ -110,13 +112,17 @@ resource "aws_s3_bucket_public_access_block" "orthanc_config_blockpublicaccess" 
 
 # Upload orthanc-config files to S3
 resource "aws_s3_object" "orthanc_config_files" {
-  for_each = fileset("${path.module}/../../orthanc-config", "**")
+  for_each = fileset("${path.root}/../orthanc-config", "**")
   bucket   = aws_s3_bucket.orthanc_config.bucket
   key      = each.value
-  source   = "${path.module}/../../orthanc-config/${each.value}"
-  etag     = filemd5("${path.module}/../../orthanc-config/${each.value}")
+  source   = "${path.root}/../orthanc-config/${each.value}"
+  etag     = filemd5("${path.root}/../orthanc-config/${each.value}")
   
-  depends_on = [aws_s3_bucket.orthanc_config]
+  depends_on = [
+    aws_s3_bucket.orthanc_config,
+    aws_s3_bucket_server_side_encryption_configuration.orthanc_config_sse,
+    aws_s3_bucket_public_access_block.orthanc_config_blockpublicaccess
+  ]
 }
 
 resource "aws_s3_bucket" "logging_bucket" {
