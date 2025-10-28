@@ -12,13 +12,14 @@ output "host_info" {
   description = "Instance IDs, Public IPs, and DNS names of EC2 instances"
 }
 
-output "server_dns" {
+output "instance_urls" {
   value = {
-    dns_names = module.ec2.hosts_info.public_dns
-    count     = length(module.ec2.hosts_info.public_dns)
-    services  = "HTTPS (port 443) and DICOM TLS (port 11112)"
+    urls = [
+      for dns in module.ec2.hosts_info.public_dns : "https://${dns}"
+    ]
+    services = "HTTPS (port 443) and DICOM TLS (port 11112)"
+    note = "Click the URLs above to access the application (accept self-signed certificate warning)"
   }
-  description = "DNS names of EC2 instances with service information"
 }
 
 output "database_connection" {
