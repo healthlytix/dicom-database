@@ -48,10 +48,8 @@ output "ssh_commands" {
   value = {
     commands = [
       for i in range(length(module.ec2.hosts_info.instance_ids)) : 
-      "ssh -i ${var.ec2_config.PublicKeyPath} ec2-user@${module.ec2.hosts_info.public_ips[i]}"
+      "ssh -i ${replace(var.ec2_config.PublicKeyPath, ".pub", "")} ec2-user@${module.ec2.hosts_info.public_ips[i]}"
     ]
-    count = length(module.ec2.hosts_info.instance_ids)
-    key_path = var.ec2_config.PublicKeyPath
   }
   description = "SSH commands to connect to EC2 instances"
 }
