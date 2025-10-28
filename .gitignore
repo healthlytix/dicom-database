@@ -1,3 +1,4 @@
+certs
 site
 .DS_Store
 terraform.tfstate.backup
