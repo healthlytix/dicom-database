@@ -69,4 +69,19 @@ EOF
 fi
 
 systemctl restart docker
+
+# Start the containers as ec2-user after Docker daemon is configured
+runuser -l ec2-user -c "
+  cd ~/orthanc-config
+  echo 'Starting Docker containers...'
+  docker compose up -d
+  
+  # Wait a moment for containers to download and start
+  sleep 60
+  
+  # Check container status
+  echo 'Container status:'
+  docker compose ps
+"
+
 echo "Leaving userdata2 script"

@@ -84,10 +84,10 @@ resource "aws_s3_bucket_policy" "orthbucketpolicy" {
 }
 
 resource "aws_s3_bucket" "orthanc_config" {
-  bucket        = "orthanc-config"
+  bucket        = "ctx-orthanc-config"
   force_destroy = true
   tags          = {
-    Name = "orthanc-config"
+    Name = "ctx-orthanc-config"
   }
 }
 
@@ -117,6 +117,11 @@ resource "aws_s3_object" "orthanc_config_files" {
   key      = each.value
   source   = "${path.root}/../orthanc-config/${each.value}"
   etag     = filemd5("${path.root}/../orthanc-config/${each.value}")
+  
+  # Ignore changes to prevent unnecessary re-uploads
+  lifecycle {
+    ignore_changes = [etag, source]
+  }
   
   depends_on = [
     aws_s3_bucket.orthanc_config,
