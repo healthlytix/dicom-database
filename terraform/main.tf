@@ -5,7 +5,9 @@ locals {
   # Calculate subnet size for each type of subnet per AZ, in the order of public subnet and private subnet
   subnet_sizes = [var.network_config.public_subnet_pfxlen - local.vpc_pfxlen, var.network_config.private_subnet_pfxlen - local.vpc_pfxlen]
   # Calculate the Subnet CIDRs for each type of subnet, in all AZs
-  subnet_cidrs = cidrsubnets(var.network_config.vpc_cidr, flatten([for i in range(var.network_config.az_count) : local.subnet_sizes])...)
+  # For RDS, we need at least 2 AZs, so use max(az_count, 2)
+  effective_az_count = max(var.network_config.az_count, 2)
+  subnet_cidrs = cidrsubnets(var.network_config.vpc_cidr, flatten([for i in range(local.effective_az_count) : local.subnet_sizes])...)
   # For each type of subnet, build a list of CIDRs for the subnet type in all AZs
   public_subnets_cidr_list  = [for idx, val in local.subnet_cidrs : val if idx % 2 == 0]
   private_subnets_cidr_list = [for idx, val in local.subnet_cidrs : val if idx % 2 == 1]
@@ -46,6 +48,7 @@ module "database" {
   custom_key_arn  = module.key.custom_key_id
   resource_prefix = random_pet.prefix.id
   is_prod         = var.provider_tags.environment == "prd"
+  multi_az        = var.network_config.az_count >= 2
   depends_on      = [module.key]
 }
 
@@ -62,7 +65,7 @@ module "ec2" {
   vpc_config = {
     vpc_id                    = module.network.vpc_info.vpc_id
     public_subnet_ids         = module.network.vpc_info.public_subnet_ids
-    public_subnet_cidr_blocks = local.public_subnets_cidr_list
+    public_subnet_cidr_blocks = [for i in range(var.network_config.az_count) : local.public_subnets_cidr_list[i]]
     dcm_cli_cidrs             = (var.network_config.vpn_client_cidr == "" || var.network_config.vpn_client_cidr == null) ? var.network_config.dcm_cli_cidrs : concat(var.network_config.dcm_cli_cidrs, [var.network_config.vpn_client_cidr])
     web_cli_cidrs             = var.network_config.web_cli_cidrs
   }
