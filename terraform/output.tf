@@ -22,6 +22,15 @@ output "instance_urls" {
   }
 }
 
+output "keycloak_urls" {
+  value = {
+    urls = [
+      for dns in module.ec2.hosts_info.public_dns : "https://${dns}/keycloak"
+    ]
+    note = "These URLs can be used to access the keycloak (user management) admin console"
+  }
+}
+
 output "database_connection" {
   value = {
     endpoint = module.database.db_info.db_address
